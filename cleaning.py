@@ -131,7 +131,5 @@ senselemmatized = [wnlemma.lemmatize(w) for w in nostops]
 senselemmatized = [w for w in senselemmatized if w not in ['chapter']]
 
 
-# create corpus
-
 
 
