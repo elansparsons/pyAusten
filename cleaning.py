@@ -7,6 +7,9 @@ nltk.download('wordnet')
 from nltk.corpus import stopwords
 english_stops = set(stopwords.words('english'))
 from nltk.stem import WordNetLemmatizer
+from nltk.stem import SnowballStemmer
+from nltk.stem. porter import *
+from gensim.utils import simple_preprocess
 
 # read in text files
 novels = ['emma','mansfieldpark','northanger','persuasion','pridenp','sensensense']
@@ -36,10 +39,15 @@ emwords = [w.lower() for w in emtok]
 
 nostops = [w for w in emwords if w not in english_stops]
 
-# lemmatizing
+# stemming/lemmatizing
+#def stemmatize(text):
+#    return PorterStemmer.stem(WordNetLemmatizer().lemmatize(text,pos='v'))
+
 wnlemma = WordNetLemmatizer()
 emmatized = [wnlemma.lemmatize(w) for w in nostops]
 emmatized = [w for w in emmatized if w not in ['chapter']]
+
+#emmatized = stemmatize(nostops)
 
 
 # MANSFIELD PARK PREPROCESSING - WORDS
