@@ -4,7 +4,9 @@ import itertools
 import numpy as np
 from gensim.models.ldamulticore import LdaMulticore
 from gensim.models.tfidfmodel import TfidfModel
+from gensim.models import Word2Vec
 np.random.seed(748)
+from sklearn.manifold import t_sne
 
 novels = [emmatized, manslemmatized, northlemmatized, perslemmatized, pridelemmatized, senselemmatized]
 
@@ -41,7 +43,7 @@ for term_id, weight in sorted_tfidf[:20]:
 # LDA analysis - BOW
 
 austen_lda_bow = LdaMulticore(corpus, num_topics = 6, id2word = dictionary,
-                                        passes = 2, workers = 2)
+                                        passes = 10, workers = 2)
 
 for idx, topic in austen_lda_bow.print_topics(-1):
     print('Topic: {} \nWords: {}'.format(idx, topic))
@@ -49,7 +51,22 @@ for idx, topic in austen_lda_bow.print_topics(-1):
 # LDA - tfidf
 
 austen_lda_tfidf = LdaMulticore(corpus_tfidf, num_topics = 6, id2word = dictionary,
-                                passes = 2, workers = 2)
+                                passes = 10, workers = 2)
 
 for idx, topic in austen_lda_tfidf.print_topics(-1):
-    print('Topic: {} \nWords: {}'.format(idx, topic))
+    print('Topic: {} \nWords: {}'.format(idx, topic)) #no useful weights
+
+
+# word2vec to T-SNE
+# create sentence corpus via flatten
+
+novelsent = [emsplit_sentences, mansplit_sentences, northsplit_sentences, persplit_sentences, pridesplit_sentences,
+             sensplit_sentences]
+
+sentences = [sentence for novel in novelsent for sentence in novel]
+
+austen_w2v = Word2Vec(sentences, size=100, window=5, min_count=5, workers=4, sg=0)
+
+austen_w2v.wv.most_similar("poor")
+
+austen_w2v.save("austen_w2v.model")
