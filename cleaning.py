@@ -54,7 +54,8 @@ emsplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in emsent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     emsplit_sentences.append(tokens)
 
@@ -88,7 +89,8 @@ mansplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in mansent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     mansplit_sentences.append(tokens)
 
@@ -119,7 +121,8 @@ northsplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in northsent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     northsplit_sentences.append(tokens)
 
@@ -150,7 +153,8 @@ persplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in persent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     persplit_sentences.append(tokens)
 
@@ -180,7 +184,8 @@ pridesplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in pridesent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     pridesplit_sentences.append(tokens)
 
@@ -211,7 +216,8 @@ sensplit_sentences = []
 wnlemma = WordNetLemmatizer()
 for sentence in sensent:
     tokens = nltk.regexp_tokenize(sentence,pattern)
-    tokens = [w.lower() for w in tokens if w not in english_stops]
+    tokens = [w.lower() for w in tokens]
+    tokens = [w for w in tokens if w not in english_stops]
     tokens = [wnlemma.lemmatize(w) for w in tokens]
     sensplit_sentences.append(tokens)
 

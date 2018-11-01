@@ -65,8 +65,12 @@ novelsent = [emsplit_sentences, mansplit_sentences, northsplit_sentences, perspl
 
 sentences = [sentence for novel in novelsent for sentence in novel]
 
-austen_w2v = Word2Vec(sentences, size=100, window=5, min_count=5, workers=4, sg=0)
+austen_w2v = Word2Vec(sentences, size=100, window=5, min_count=10, workers=4, sg=0)
 
 austen_w2v.wv.most_similar("poor")
+austen_w2v.similar_by_word("poor")
 
 austen_w2v.save("austen_w2v.model")
+
+
+# bigram and trigram models
