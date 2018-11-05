@@ -5,8 +5,8 @@ import numpy as np
 from gensim.models.ldamulticore import LdaMulticore
 from gensim.models.tfidfmodel import TfidfModel
 from gensim.models import Word2Vec
+from gensim.models.phrases import Phrases, Phraser
 np.random.seed(748)
-from sklearn.manifold import t_sne
 
 novels = [emmatized, manslemmatized, northlemmatized, perslemmatized, pridelemmatized, senselemmatized]
 
@@ -73,4 +73,26 @@ austen_w2v.similar_by_word("poor")
 austen_w2v.save("austen_w2v.model")
 
 
-# bigram and trigram models
+# bigram and trigram models from original sentences
+
+originals = [persent, mansent, northsent, persent, pridesent, sensent]
+
+
+
+bigrams = Phrases(originals, min_count=5)
+biphraser = Phraser(bigrams)
+tokens_ = biphraser[sentences]
+list(tokens_[:5])
+
+bicounter = Counter()
+for key in bigrams.vocab.keys():
+    if type(key) == 'bytes':
+        if len(key.decode('utf8').split("_")) > 1:
+            bicounter[key] += bigrams.vocab[key]
+        else:
+            if len(key.split("_")) > 1:
+                bicounter[key] += bigrams.vocab[key]
+
+bicounter.most_common(20)
+
+trigrams = TrigramCollocationFinder.from_words(corpus)

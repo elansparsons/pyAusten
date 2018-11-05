@@ -26,7 +26,7 @@ def tsne_closest(model, word):
     word_labels = [word]
 
     #similar words
-    close_words = model.wv.most_similar(word, topn=20)
+    close_words = model.wv.most_similar(word, topn=30)
 
     #vector for close words
     arr = np.append(arr, np.array([model[word]]),axis=0)
@@ -48,6 +48,7 @@ def tsne_closest(model, word):
 
     for label, x, y in zip(word_labels, x_coords, y_coords):
         plt.annotate(label, xy = (x,y), xytext = (0,0), textcoords='offset points')
+    plt.plot(x_coords[0],y_coords[0],'ro')
     plt.show()
 
-tsne_closest(austen_w2v,"rich")
+tsne_closest(austen_w2v,"pride")
