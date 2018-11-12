@@ -21,7 +21,7 @@ plt.show()
 plt.ylim(40,80)
 plt.xlim(-25,50)
 
-#function to make tsne model of related words
+#function to make tsne model of specific words
 def tsne_closest(model, word):
     arr = np.empty((0,100), dtype='f')
     word_labels = [word]
@@ -53,3 +53,29 @@ def tsne_closest(model, word):
     plt.show()
 
 tsne_closest(austen_w2v,"lady")
+
+# function to make tsne of all words
+def tsne_all(model):
+    labels = []
+    tokens = []
+
+    for word in model.wv.vocab:
+        tokens.append(model[word])
+        labels.append(word)
+
+    tsne_model = TSNE(perplexity=40, n_components=2, init='pca', random_state=748)
+    new_values = tsne_model.fit_transform(tokens)
+
+    x = []
+    y = []
+    for value in new_values:
+        x.append(value[0])
+        y.append(value[1])
+
+    sns.scatterplot(x,y)
+
+    for label, x, y in zip(labels,x,y):
+        plt.annotate(label, xy = (x,y), xytext = (0,0), textcoords='offset points')
+    plt.show()
+
+tsne_all(austen_w2v_20)
