@@ -32,7 +32,7 @@ for word_id, word_count in sorted_count[:20]:
 tfidf = TfidfModel(corpus)
 corpus_tfidf = tfidf[corpus]
 
-doc = corpus[5]
+doc = corpus[4]
 pnpweights = tfidf[doc]
 
 sorted_tfidf = sorted(pnpweights, key=lambda w: w[1], reverse=True)

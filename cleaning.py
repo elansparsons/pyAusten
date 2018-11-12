@@ -5,12 +5,19 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
 from nltk.corpus import stopwords
-english_stops = set(stopwords.words('english'))
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import sent_tokenize
 from nltk.stem import SnowballStemmer
 from nltk.stem. porter import *
 from gensim.utils import simple_preprocess
+
+# prepare with additional stopwords
+english_stops = stopwords.words('english')
+english_stops.append("mr")
+english_stops.append("mrs")
+english_stops.append("miss")
+english_stops.append("colonel")
+english_stops = set(english_stops)
 
 # read in text files
 novels = ['emma','mansfieldpark','northanger','persuasion','pridenp','sensensense']

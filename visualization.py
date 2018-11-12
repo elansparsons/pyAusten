@@ -21,12 +21,13 @@ plt.show()
 plt.ylim(40,80)
 plt.xlim(-25,50)
 
+#function to make tsne model of related words
 def tsne_closest(model, word):
     arr = np.empty((0,100), dtype='f')
     word_labels = [word]
 
     #similar words
-    close_words = model.wv.most_similar(word, topn=30)
+    close_words = model.wv.most_similar(word, topn=20)
 
     #vector for close words
     arr = np.append(arr, np.array([model[word]]),axis=0)
@@ -51,4 +52,4 @@ def tsne_closest(model, word):
     plt.plot(x_coords[0],y_coords[0],'ro')
     plt.show()
 
-tsne_closest(austen_w2v,"pride")
+tsne_closest(austen_w2v,"lady")
