@@ -3,6 +3,9 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from bokeh.plotting import figure, show, output_file, save
+from bokeh.models import value, LabelSet, ColumnDataSource
+output_file("./output/austen_tsne.html", title = "austen tsne")
 
 vocab = list(austen_w2v.wv.vocab)
 X = austen_w2v[vocab]
@@ -71,11 +74,54 @@ def tsne_all(model):
     for value in new_values:
         x.append(value[0])
         y.append(value[1])
+    zip_labs = zip(labels,x,y)
+    list_df = pd.DataFrame(list(zip_labs),columns=['label','x','y'])
 
     sns.scatterplot(x,y)
 
+    main_chars = ['darcy','elizabeth','bennet','jane','bingley','emma','woodhouse','harriet','knightley','wentworth','fanny','elinor','marianne','edmund', 'catherine', 'james', 'tilney', 'anne', 'wentworth']
+
     for label, x, y in zip(labels,x,y):
         plt.annotate(label, xy = (x,y), xytext = (0,0), textcoords='offset points')
+        if label in main_chars:
+            plt.plot(x,y,'ro')
     plt.show()
 
-tsne_all(austen_w2v_20)
+    return list_df
+
+tsne_df = tsne_all(austen_w2v_20)
+
+# TSNE to bokeh
+
+main_chars = ['darcy','elizabeth','bennet','jane','bingley','emma','woodhouse','harriet','knightley','wentworth','fanny','elinor','marianne','edmund', 'catherine', 'james', 'tilney', 'anne', 'wentworth']
+
+tsne_short = tsne_df[tsne_df.label.isin(main_chars)]
+
+source = ColumnDataSource(dict(
+    x = tsne_df['x'],
+    y = tsne_df['y'],
+    words = tsne_df['label']
+))
+
+short_source = ColumnDataSource(dict(
+    x = tsne_short['x'],
+    y = tsne_short['y'],
+    words = tsne_short['label']
+))
+
+title = "TSNE graph of words in Austen's major novels"
+
+p = figure(plot_width = 1500, plot_height = 800, title = title, tools = "pan,wheel_zoom,box_zoom,reset,previewsave",
+           x_axis_type = None, y_axis_type = None, min_border=1)
+
+p.scatter(x='x',y='y', source=source)
+p.scatter(x='x',y='y', source=short_source, color='red', size=5)
+
+labels = LabelSet(x='x',y='y',text='words',level='glyph',
+              x_offset=5, y_offset=5, source=source, render_mode='canvas', text_font_size='8pt', text_alpha=0.7)
+
+p.add_layout(labels)
+
+show(p)
+
+
