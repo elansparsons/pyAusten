@@ -2,10 +2,13 @@ from gensim.corpora.dictionary import Dictionary
 from collections import defaultdict
 import itertools
 import numpy as np
+import pandas as pd
 from gensim.models.ldamulticore import LdaMulticore
 from gensim.models.tfidfmodel import TfidfModel
 from gensim.models import Word2Vec
+from gensim.models import CoherenceModel
 from gensim.models.phrases import Phrases, Phraser
+from gensim.matutils import corpus2csc
 np.random.seed(748)
 
 novels = [emmatized, manslemmatized, northlemmatized, perslemmatized, pridelemmatized, senselemmatized]
@@ -52,9 +55,44 @@ for idx, topic in austen_lda_bow.print_topics(-1):
 
 austen_lda_tfidf = LdaMulticore(corpus_tfidf, num_topics = 6, id2word = dictionary,
                                 passes = 10, workers = 2)
+coherence_tfidf = CoherenceModel(model=austen_lda_tfidf, dictionary=dictionary, corpus = corpus, coherence='u_mass')
 
 for idx, topic in austen_lda_tfidf.print_topics(-1):
     print('Topic: {} \nWords: {}'.format(idx, topic)) #no useful weights
+
+austen_lda_tfidf = LdaMulticore(corpus_tfidf, num_topics = 2, id2word = dictionary,
+                                passes = 10, workers = 2)
+for idx, topic in austen_lda_tfidf.print_topics(-1):
+    print('Topic: {} \nWords: {}'.format(idx, topic))
+
+# find ideal topic number with LDA tfidf
+
+def lda_coherence(dictionary, corpus, limit, start=2, step=3):
+    #compute coherence score of models with many topic counts
+    #returns list of LDA models & coherence values
+    coherence_values = []
+    model_list = []
+
+    for num_topics in range(start, limit, step):
+        model = LdaMulticore(corpus, num_topics = num_topics, id2word = dictionary)
+        model_list.append(model)
+        coherence_mod = CoherenceModel(model = model, corpus=corpus, dictionary=dictionary, coherence='u_mass')
+        coherence_values.append(coherence_mod.get_coherence())
+
+    return model_list, coherence_values
+
+model_list, coherence_values = lda_coherence(dictionary, corpus, limit=30, step=2)
+
+limit=30;start=2;step=2
+x = range(start, limit, step)
+plt.plot(x,coherence_values)
+plt.xlabel("No. topics")
+plt.ylabel("Coherence score")
+plt.legend(("coherence_values"),loc='best')
+plt.show()
+# lowest topic number, 2, is best. Novels indistinguishable from one another??
+
+
 
 
 # word2vec to T-SNE
@@ -67,10 +105,31 @@ sentences = [sentence for novel in novelsent for sentence in novel]
 
 austen_w2v = Word2Vec(sentences, size=100, window=5, min_count=10, workers=4, sg=0)
 
+austen_w2v_20 = Word2Vec(sentences, size=100, window=5, min_count=20, workers=4, sg=0)
+
 austen_w2v.wv.most_similar("poor")
 austen_w2v.similar_by_word("poor")
 
-austen_w2v.save("austen_w2v.model")
+austen_w2v.save("./output/austen_w2v.model")
+
+# word corpus to matrix (co-occurrence), then export for Gephi network graph
+
+mat_corp = corpus2csc(corpus)
+mat_corpdf = pd.DataFrame(mat_corp.toarray())
+
+mat_corpdf.to_csv("./output/mat_corp.csv")
+
+# tsne to matrix for network graph
+
+tsne_labels = []
+tsne_tokens = []
+
+for word in austen_w2v_20.wv.vocab:
+    tsne_tokens.append(austen_w2v_20[word])
+    tsne_labels.append(word)
+
+tsne_model = TSNE(perplexity=40, n_components=2, init='pca', random_state=748)
+new_values = tsne_model.fit_transform(tsne_tokens)
 
 
 # bigram and trigram models from original sentences
