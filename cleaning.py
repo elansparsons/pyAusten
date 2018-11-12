@@ -17,6 +17,8 @@ english_stops.append("mr")
 english_stops.append("mrs")
 english_stops.append("miss")
 english_stops.append("colonel")
+english_stops.append("volume")
+english_stops.append("chapter")
 english_stops = set(english_stops)
 
 # read in text files
